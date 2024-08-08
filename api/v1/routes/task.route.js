@@ -1,35 +1,10 @@
 const express = require('express')
 const route = express.Router()
 
-const Task = require("../../../models/task.model")
+const controller = require("../controllers/task.controller")
 
-route.get("/", async (req, res) => {
-    const tasks = await Task.find({
-        deleted: false
-    })
+route.get("/", controller.index)
 
-    // console.log(tasks)
-
-    res.json(tasks)
-})
-
-route.get("/detail/:id", async (req, res) => {
-    try {
-        const id = req.params.id 
-
-        const task = await Task.findOne({
-            _id: id,
-            deleted: false
-        })
-
-        // console.log(task)
-
-        res.json(task)
-
-    } catch (error) {
-        res.json("Không tìm thấy!")
-    }
-    
-})
+route.get("/detail/:id", controller.detail)
 
 module.exports = route
