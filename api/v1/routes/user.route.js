@@ -9,4 +9,6 @@ route.post("/login", controller.login)
 
 route.post("/password/forgot", controller.forgotPassword)
 
+route.post("/password/otp", controller.otpPassword)
+
 module.exports = route

@@ -6,6 +6,7 @@ const ForgotPassword = require("../models/forgot-password.model")
 
 const generateHelper = require("../../../helpers/generate")
 const sendMailHelper = require("../../../helpers/sendMail")
+const e = require("express")
 
 // [POST] /api/v1/users/register
 module.exports.register = async (req, res) => {
@@ -136,6 +137,46 @@ module.exports.forgotPassword = async (req, res) => {
         res.json({
             code: 200,
             message: "Đã gửi mã OTP qua email!"
+        })
+
+    } catch (error) {
+        res.json({
+            code: 400,
+            message: "Lỗi!"
+        })
+    }
+}
+
+// [POST] /api/v1/users/password/otp
+module.exports.otpPassword = async (req, res) => {
+    try {
+        const email = req.body.email
+        const otp = req.body.otp
+
+        const result = await ForgotPassword.findOne({
+            email: email,
+            otp: otp
+        })
+
+        if (!result) {
+            res.json({
+                code: 400,
+                message: "Mã OTP không hợp lệ!"
+            })
+            return
+        }
+
+        const user = await User.findOne({
+            email: email
+        })
+
+        const token = user.token
+        res.cookie("token", token)
+
+        res.json({
+            code: 200,
+            message: "Xác thực thành công!",
+            token: token
         })
 
     } catch (error) {
